@@ -38,21 +38,18 @@ public class LoginController {
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation("登录接口")
-	public Result<JSONObject> login(@RequestBody SysLoginModel sysLoginModel) {
-		Result<JSONObject> result = new Result<JSONObject>();
+	public Result login(@RequestBody SysLoginModel sysLoginModel) {
 		String username = sysLoginModel.getUsername();
 		String password = sysLoginModel.getPassword();
 		SysUser sysUser = sysUserService.getUserByName(username);
 		if(sysUser==null) {
-			result.error500("该用户不存在");
-			return result;
+			return Result.error("该用户不存在");
 		}else {
 			//密码验证
 			String userpassword = PasswordUtil.encrypt(username, password, sysUser.getSalt());
 			String syspassword = sysUser.getPassword();
 			if(!syspassword.equals(userpassword)) {
-				result.error500("用户名或密码错误");
-				return result;
+				return Result.error("用户名或密码错误");
 			}
 			//生成token
 			String token = JwtUtil.sign(username, syspassword);
@@ -63,10 +60,8 @@ public class LoginController {
 			JSONObject obj = new JSONObject();
 			obj.put("token", token);
 			obj.put("userInfo", sysUser);
-			result.setResult(obj);
-			result.success("登录成功");
 		}
-		return result;
+		return Result.ok("登录成功");
 	}
 	
 	/**
@@ -74,7 +69,7 @@ public class LoginController {
 	 * @return
 	 */
 	@RequestMapping(value = "/logout")
-	public Result<Object> logout(HttpServletRequest request, HttpServletResponse response) {
+	public Result logout(HttpServletRequest request, HttpServletResponse response) {
 		//用户退出逻辑
 		Subject subject = SecurityUtils.getSubject();
 		LoginUser sysUser = (LoginUser)subject.getPrincipal();

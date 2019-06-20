@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = BusinessException.class)
     public Result businessException(BusinessException e) {
         log.error(e.getMessage(), e);
-        return Result.error(null == e.getCode() ? CommonConstant.RT_ERROR_500 : e.getCode(), e.getMessage());
+        return Result.error(null == e.getCode() ? CommonConstant.CODE_FAILED : e.getCode(), e.getMessage());
     }
 
 }

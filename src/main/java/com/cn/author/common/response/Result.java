@@ -15,9 +15,15 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel(value="接口返回对象", description="接口返回对象")
-public class Result<T> implements Serializable {
+public class Result implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 时间戳
+	 */
+	@ApiModelProperty(value = "时间戳")
+	private long timestamp = System.currentTimeMillis();
 
 	/**
 	 * 成功标志
@@ -35,69 +41,60 @@ public class Result<T> implements Serializable {
 	 * 返回代码
 	 */
 	@ApiModelProperty(value = "返回代码")
-	private Integer code = 0;
+	private Integer code;
 	
 	/**
 	 * 返回数据对象 data
 	 */
 	@ApiModelProperty(value = "返回数据对象")
-	private T result;
+	private Object data;
 
-	public Result() {
-		
-	}
-	
-	/**
-	 * 时间戳
-	 */
-	@ApiModelProperty(value = "时间戳")
-	private long timestamp = System.currentTimeMillis();
 
-	public void error500(String message) {
+	public Result(Integer code,String message,  Object data) {
+		this.code = code;
 		this.message = message;
-		this.code = CommonConstant.RT_ERROR_500;
-		this.success = false;
+		this.data = data;
 	}
 
-	public void success(String message) {
+	public Result(String message, Object data) {
+		this.code = CommonConstant.CODE_SUCCESS;
 		this.message = message;
-		this.code = CommonConstant.RT_OK_200;
-		this.success = true;
+		this.data = data;
 	}
+
+	public Result(Object data) {
+		this.code = CommonConstant.CODE_SUCCESS;
+		this.message = CommonConstant.OPERATE_SUCCESS;
+		this.data = data;
+	}
+
+
+	public static Result ok() {
+		return new Result(null);
+	}
+
+	public static Result ok(Object data) {
+		return new Result(data);
+	}
+
+	public static Result ok(String msg) {
+		return new Result(msg,null);
+	}
+
+	public static Result ok(String msg,Object data) {
+		return new Result(msg,data);
+	}
+
 	
-	public static Result<Object> error(String msg) {
-		return error(CommonConstant.RT_ERROR_500, msg);
+	public static Result error() {
+		return new Result(CommonConstant.CODE_FAILED, CommonConstant.OPERATE_FAILED,null);
 	}
-	
-	public static Result<Object> error(int code, String msg) {
-		Result<Object> r = new Result<Object>();
-		r.setCode(code);
-		r.setMessage(msg);
-		r.setSuccess(false);
-		return r;
+	public static Result error(String msg) {
+		return new Result(CommonConstant.CODE_FAILED, msg,null);
 	}
-	
-	public static Result<Object> ok() {
-		Result<Object> r = new Result<Object>();
-		r.setSuccess(true);
-		r.setCode(CommonConstant.RT_OK_200);
-		r.setMessage("成功");
-		return r;
+
+	public static Result error(Integer code, String msg) {
+		return new Result(code, msg, null);
 	}
-	
-	public static Result<Object> ok(String msg) {
-		Result<Object> r = new Result<Object>();
-		r.setSuccess(true);
-		r.setCode(CommonConstant.RT_OK_200);
-		r.setMessage(msg);
-		return r;
-	}
-	
-	public static Result<Object> ok(Object data) {
-		Result<Object> r = new Result<Object>();
-		r.setSuccess(true);
-		r.setCode(CommonConstant.RT_OK_200);
-		r.setResult(data);
-		return r;
-	}
+
 }
