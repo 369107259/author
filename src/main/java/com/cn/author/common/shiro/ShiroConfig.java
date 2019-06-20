@@ -39,12 +39,18 @@ public class ShiroConfig {
 		// 拦截器
 		Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 		// 配置不会被拦截的链接 顺序判断
-		filterChainDefinitionMap.put("/sys/login", "anon"); //登录接口排除
-		filterChainDefinitionMap.put("/auth/2step-code", "anon");//登录验证码
-		filterChainDefinitionMap.put("/sys/common/view/**", "anon");//图片预览不限制token
-		filterChainDefinitionMap.put("/sys/common/download/**", "anon");//文件下载不限制token
-		filterChainDefinitionMap.put("/sys/common/pdf/**", "anon");//pdf预览
-		filterChainDefinitionMap.put("/generic/**", "anon");//pdf预览需要文件
+		//登录接口排除
+//		filterChainDefinitionMap.put("/sys/login", "anon");
+		//登录验证码
+		filterChainDefinitionMap.put("/auth/2step-code", "anon");
+		//图片预览不限制token
+		filterChainDefinitionMap.put("/sys/common/view/**", "anon");
+		//文件下载不限制token
+		filterChainDefinitionMap.put("/sys/common/download/**", "anon");
+		//pdf预览
+		filterChainDefinitionMap.put("/sys/common/pdf/**", "anon");
+		//pdf预览需要文件
+		filterChainDefinitionMap.put("/generic/**", "anon");
 		filterChainDefinitionMap.put("/", "anon");
 		filterChainDefinitionMap.put("/doc.html", "anon");
 		filterChainDefinitionMap.put("/**/*.js", "anon");
@@ -64,8 +70,6 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/actuator/metrics/**", "anon");
 		filterChainDefinitionMap.put("/actuator/httptrace/**", "anon");
 		filterChainDefinitionMap.put("/actuator/redis/**", "anon");
-		filterChainDefinitionMap.put("/test/jeecgDemo/demo3", "anon"); //模板测试
-		filterChainDefinitionMap.put("/test/jeecgDemo/redisDemo/**", "anon"); //redis测试
 
 		// 添加自己的过滤器并且取名为jwt
 		Map<String, Filter> filterMap = new HashMap<String, Filter>(1);

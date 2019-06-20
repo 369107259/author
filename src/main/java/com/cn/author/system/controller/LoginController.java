@@ -78,8 +78,8 @@ public class LoginController {
 		//用户退出逻辑
 		Subject subject = SecurityUtils.getSubject();
 		LoginUser sysUser = (LoginUser)subject.getPrincipal();
-		log.info(" 用户名:  "+sysUser.getRealname()+",退出成功！ ");
 	    subject.logout();
+		log.info(" 用户名:  "+sysUser.getRealname()+",退出成功！ ");
 
 	    String token = request.getHeader(CommonConstant.X_ACCESS_TOKEN);
 	    //清空用户Token缓存

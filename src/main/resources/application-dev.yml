@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://39.107.253.236:3306/jeecg-boot?useUnicode=true&characterEncoding=utf8&emptyStringsConvertToZero=true&zeroDateTimeBehavior=convertToNull&useSSL=false
+    username: root
+    password: admin
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      validationQuery: select 'x'
+      maxActive: 20
+      initialSize: 1
+      minIdle: 3
+      maxWait: 600
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: false
+      filter:
+        stat:
+          log-slow-sql: true
+  redis:
+    database: 0
+    timeout: 0ms
+    host: 39.107.253.236
+    port: 6379
+    password: admin
+
+#mybatis plus 设置
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*Mapper.xml

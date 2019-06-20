@@ -21,23 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 public class JwtFilter extends BasicHttpAuthenticationFilter {
 
 	/**
-	 * 检测用户是否登录
-	 * 检测header里面是否包含CommonConstant.X_ACCESS_TOKEN字段
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@Override
-	protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
-		HttpServletRequest req = (HttpServletRequest) request;
-
-		String authorization = req.getHeader(CommonConstant.X_ACCESS_TOKEN);
-
-		return authorization != null;
-
-	}
-
-	/**
 	 * 执行登录认证
 	 *
 	 * @param request
