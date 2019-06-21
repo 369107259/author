@@ -1,8 +1,7 @@
 package com.cn.author.common.exception;
 
 import com.cn.author.common.constant.interfaces.CommonConstant;
-import com.cn.author.common.exception.BusinessException;
-import com.cn.author.common.response.Result;
+import com.cn.author.common.response.JsonResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,27 +19,27 @@ public class GlobalExceptionHandler {
      * 系统异常
      */
     @ExceptionHandler(Exception.class)
-    public Result handleException(Exception e) {
+    public JsonResult handleException(Exception e) {
         log.error(e.getMessage(), e);
-        return Result.error("服务器错误，请联系管理员");
+        return JsonResult.error500("服务器错误，请联系管理员");
     }
 
     /**
      * 拦截未知的运行时异常
      */
     @ExceptionHandler(value = RuntimeException.class)
-    public Result runtimeException(RuntimeException e) {
+    public JsonResult runtimeException(RuntimeException e) {
         log.error(e.getMessage(), e);
-        return Result.error("运行时异常:" + e.getMessage());
+        return JsonResult.error500("运行时异常:" + e.getMessage());
     }
 
     /**
      * 请求方式不支持
      */
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
-    public Result handleException(HttpRequestMethodNotSupportedException e) {
+    public JsonResult handleException(HttpRequestMethodNotSupportedException e) {
         log.error(e.getMessage(), e);
-        return Result.error("不支持' " + e.getMethod() + "'请求");
+        return JsonResult.error500("不支持' " + e.getMethod() + "'请求");
     }
 
     /***
@@ -49,9 +48,9 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = BusinessException.class)
-    public Result businessException(BusinessException e) {
+    public JsonResult businessException(BusinessException e) {
         log.error(e.getMessage(), e);
-        return Result.error(null == e.getCode() ? CommonConstant.CODE_FAILED : e.getCode(), e.getMessage());
+        return JsonResult.error500(null == e.getCode() ? CommonConstant.CODE_FAILED : e.getCode(), e.getMessage());
     }
 
 }

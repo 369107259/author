@@ -11,8 +11,6 @@ public interface CommonConstant {
      */
     Integer CODE_FAILED = 500;
     Integer CODE_SUCCESS = 200;
-    String CODE_SUCCESS_VALUE = "200";
-    String CODE_FAILED_VALUE = "200";
     String OPERATE_SUCCESS = "success";
     String OPERATE_FAILED = "failed";
 

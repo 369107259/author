@@ -1,162 +1,146 @@
-/**
- * Copyright © 2019 dream horse Info. Tech Ltd. All rights reserved.
- *
- * @Package: com.github.flying.cattle.mdg.aid
- * @author: flying-cattle
- * @date: 2019年4月9日 下午8:15:25
- */
 package com.cn.author.common.response;
 
 import com.cn.author.common.constant.interfaces.CommonConstant;
-import lombok.AllArgsConstructor;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.net.ConnectException;
-import java.sql.SQLException;
 
 /**
- * Copyright: Copyright (c) 2019
- *
- * <p>说明： 用户服务层</P>
- *
- * @version: V1.0
- * @author: flying-cattle
+ *   接口返回数据格式
+ * @author scott
+ * @email jeecgos@163.com
+ * @date  2019年1月19日
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@ApiModel(value="接口返回对象", description="接口返回对象")
 public class JsonResult<T> implements Serializable {
 
-    private static final long serialVersionUID = 1071681926787951549L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * <p>状态码</p>
-     */
-    private String code;
-    /**
-     * <p>业务码</p>
-     */
-    private String operate;
-    /**
-     * <p> 状态说明</p>
-     */
-    private String message;
-    /**
-     * <p>返回数据</p>
-     */
-    private T data;
+	/**
+	 * 成功标志
+	 */
+	@ApiModelProperty(value = "成功标志")
+	private boolean success = true;
 
-    /**
-     * <p>返回成功,有数据</p>
-     *
-     * @param message 操作说明
-     * @param data    对象
-     * @return JsonResult
-     */
-    public JsonResult<T> success(String message, T data) {
-        this.setCode(CommonConstant.CODE_SUCCESS_VALUE);
-        this.setOperate(CommonConstant.OPERATE_SUCCESS);
-        this.setMessage(message);
-        this.setData(data);
-        return this;
-    }
+	/**
+	 * 返回处理消息
+	 */
+	@ApiModelProperty(value = "返回处理消息")
+	private String message = "操作成功！";
 
-    /**
-     * <p>返回成功,有数据</p>
-     *
-     * @param data 对象
-     * @return JsonResult
-     */
-    public JsonResult<T> success(T data) {
-        this.setCode(CommonConstant.CODE_SUCCESS_VALUE);
-        this.setOperate(CommonConstant.OPERATE_SUCCESS);
-        this.setMessage("操作成功");
-        this.setData(data);
-        return this;
-    }
+	/**
+	 * 返回代码
+	 */
+	@ApiModelProperty(value = "返回代码")
+	private Integer code = 0;
 
-    /**
-     * <p>返回成功,无数据</p>
-     *
-     * @param message 操作说明
-     * @return JsonResult
-     */
-    public JsonResult<T> success(String message) {
-        this.setCode(CommonConstant.CODE_SUCCESS_VALUE);
-        this.setOperate(CommonConstant.OPERATE_SUCCESS);
-        this.setMessage(message);
-        this.setData(null);
-        return this;
+	/**
+	 * 返回数据对象 data
+	 */
+	@ApiModelProperty(value = "返回数据对象")
+	private T result;
 
-    }
+	public JsonResult() {
 
-    /**
-     * <p>返回失败,无数据</p>
-     *
-     * @param message 消息
-     * @return JsonResult
-     */
-    public JsonResult<T> error(String message) {
-        this.setCode(CommonConstant.CODE_FAILED_VALUE);
-        this.setOperate(CommonConstant.OPERATE_FAILED);
-        this.setMessage(message);
-        this.setData(null);
-        return this;
-    }
+	}
 
-    /**
-     * <p>返回失败,有数据</p>
-     *
-     * @param message 消息
-     * @param data    对象
-     * @return JsonResult
-     */
-    public JsonResult<T> error(String message, T data) {
-        this.setCode(CommonConstant.CODE_FAILED_VALUE);
-        this.setOperate(CommonConstant.OPERATE_FAILED);
-        this.setMessage(message);
-        this.setData(data);
-        return this;
-    }
+	/**
+	 * 时间戳
+	 */
+	@ApiModelProperty(value = "时间戳")
+	private long timestamp = System.currentTimeMillis();
 
-    public JsonResult(Throwable throwable) {
-        this.operate = CommonConstant.OPERATE_FAILED;
-        if (throwable instanceof NullPointerException) {
-            this.code = "1001";
-            this.message = "空指针：" + throwable;
-        } else if (throwable instanceof ClassCastException) {
-            this.code = "1002";
-            this.message = "类型强制转换异常：" + throwable;
-        } else if (throwable instanceof ConnectException) {
-            this.code = "1003";
-            this.message = "链接失败：" + throwable;
-        } else if (throwable instanceof IllegalArgumentException) {
-            this.code = "1004";
-            this.message = "传递非法参数异常：" + throwable;
-        } else if (throwable instanceof NumberFormatException) {
-            this.code = "1005";
-            this.message = "数字格式异常：" + throwable;
-        } else if (throwable instanceof IndexOutOfBoundsException) {
-            this.code = "1006";
-            this.message = "下标越界异常：" + throwable;
-        } else if (throwable instanceof SecurityException) {
-            this.code = "1007";
-            this.message = "安全异常：" + throwable;
-        } else if (throwable instanceof SQLException) {
-            this.code = "1008";
-            this.message = "数据库异常：" + throwable;
-        } else if (throwable instanceof ArithmeticException) {
-            this.code = "1009";
-            this.message = "算术运算异常：" + throwable;
-        } else if (throwable instanceof RuntimeException) {
-            this.code = "1010";
-            this.message = "运行时异常：" + throwable;
-        } else if (throwable instanceof Exception) {
-            this.code = "9999";
-            this.message = "未知异常" + throwable;
-        }
-    }
+
+	/**
+	 * <p>返回成功,有数据</p>
+	 * @param message 操作说明
+	 * @param data 对象
+	 * @return JsonResult
+	 */
+	public JsonResult<T> success(String message,T data) {
+		this.setCode(CommonConstant.CODE_SUCCESS);
+		this.setMessage(CommonConstant.OPERATE_SUCCESS);
+		this.setMessage(message);
+		this.setResult(data);
+		return this;
+	}
+
+	/**
+	 * <p>返回成功,有数据</p>
+	 * @param data 对象
+	 * @return JsonResult
+	 */
+	public JsonResult<T> success(T data) {
+		return success(CommonConstant.OPERATE_SUCCESS,data);
+	}
+	/**
+	 * <p>返回成功,无数据</p>
+	 * @param message 操作说明
+	 * @return JsonResult
+	 */
+	public JsonResult<T> success(String message) {
+		return success(message,null);
+	}
+	/**
+	 * <p>返回失败,无数据</p>
+	 * @param message 消息
+	 * @return JsonResult
+	 */
+	public JsonResult<T> error(String message) {
+		return error(message,null);
+	}
+	/**
+	 * <p>返回失败,有数据</p>
+	 * @param message 消息
+	 * @param data 对象
+	 * @return JsonResult
+	 */
+	public JsonResult<T> error(String message,T data) {
+		this.setCode(CommonConstant.CODE_FAILED);
+		this.setMessage(CommonConstant.OPERATE_FAILED);
+		this.setMessage(message);
+		this.setResult(data);
+		return this;
+	}
+
+
+	public static JsonResult<Object> error500(String message) {
+		return error500(CommonConstant.CODE_FAILED,message);
+	}
+
+	public static JsonResult<Object> error500(int code, String msg) {
+		JsonResult<Object> r = new JsonResult<Object>();
+		r.setCode(code);
+		r.setMessage(msg);
+		r.setSuccess(false);
+		return r;
+	}
+
+	public static JsonResult<Object> ok() {
+		JsonResult<Object> r = new JsonResult<Object>();
+		r.setSuccess(true);
+		r.setCode(CommonConstant.CODE_SUCCESS);
+		r.setMessage(CommonConstant.OPERATE_SUCCESS);
+		return r;
+	}
+
+	public static JsonResult<Object> ok(String msg) {
+		return ok(msg,null);
+	}
+
+	public static JsonResult<Object> ok(Object data) {
+		return ok(CommonConstant.OPERATE_SUCCESS,data);
+	}
+
+	public static JsonResult<Object> ok(String msg, Object data) {
+		JsonResult<Object> r = new JsonResult<Object>();
+		r.setSuccess(true);
+		r.setCode(CommonConstant.CODE_SUCCESS);
+		r.setMessage(msg);
+		r.setResult(data);
+		return r;
+	}
 }
-
