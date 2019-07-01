@@ -34,12 +34,12 @@ import java.util.Set;
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements ISysUserService {
 	
 	@Resource
-	private SysUserMapper userMapper;
+	private SysUserMapper sysUserMapper;
 
 	
 	@Override
 	public SysUser getUserByName(String username) {
-		return userMapper.getUserByName(username);
+		return sysUserMapper.getUserByName(username);
 	}
 
 	/**
@@ -79,14 +79,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	// 根据部门Id查询
 	@Override
 	public IPage<SysUser> getUserByDepId(Page<SysUser> page, String departId, String username) {
-		return userMapper.getUserByDepId(page, departId,username);
+		return sysUserMapper.getUserByDepId(page, departId,username);
 	}
 
 
 	// 根据角色Id查询
 	@Override
 	public IPage<SysUser> getUserByRoleId(Page<SysUser> page, String roleId, String username) {
-		return userMapper.getUserByRoleId(page,roleId,username);
+		return sysUserMapper.getUserByRoleId(page,roleId,username);
 	}
 
 	/**

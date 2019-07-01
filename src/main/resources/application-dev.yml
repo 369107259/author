@@ -22,10 +22,10 @@ spring:
           log-slow-sql: true
   redis:
     database: 0
-    timeout: 0ms
-    host: 39.107.253.236
+    timeout: 5000ms
+    host: 127.0.0.1
     port: 6379
-    password: admin
+#    password: admin
 
 #mybatis plus 设置
 mybatis-plus:

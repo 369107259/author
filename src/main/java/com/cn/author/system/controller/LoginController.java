@@ -48,14 +48,14 @@ public class LoginController {
 			return jsonResult;
 		}else {
 			//密码验证
-			String userpassword = PasswordUtil.encrypt(username, password, sysUser.getSalt());
-			String syspassword = sysUser.getPassword();
-			if(!syspassword.equals(userpassword)) {
+			String encryptPassword = PasswordUtil.encrypt(username, password, sysUser.getSalt());
+			String sysPassword = sysUser.getPassword();
+			if(!sysPassword.equals(encryptPassword)) {
 				jsonResult.error("用户名或密码错误");
 				return jsonResult;
 			}
 			//生成token
-			String token = JwtUtil.sign(username, syspassword);
+			String token = JwtUtil.sign(username, sysPassword);
 			redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
 			 //设置超时时间
 			redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME/1000);
