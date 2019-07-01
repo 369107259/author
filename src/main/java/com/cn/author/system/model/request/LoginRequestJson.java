@@ -10,7 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since  2019-01-18
  */
 @ApiModel(value="登录对象", description="登录对象")
-public class SysLoginModel {
+public class LoginRequestJson {
 	@ApiModelProperty(value = "账号")
     private String username;
 	@ApiModelProperty(value = "密码")

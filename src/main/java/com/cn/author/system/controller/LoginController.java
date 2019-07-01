@@ -8,13 +8,15 @@ import com.cn.author.common.utils.PasswordUtil;
 import com.cn.author.common.redis.RedisUtil;
 import com.cn.author.system.entity.SysUser;
 import com.cn.author.system.model.response.LoginUser;
-import com.cn.author.system.model.request.SysLoginModel;
+import com.cn.author.system.model.request.LoginRequestJson;
+import com.cn.author.system.model.response.UserResponseJson;
 import com.cn.author.system.service.ISysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,34 +40,28 @@ public class LoginController {
 
 	@PostMapping(value = "/login")
 	@ApiOperation("登录接口")
-	public JsonResult<JSONObject> login(@RequestBody SysLoginModel sysLoginModel) {
-		String username = sysLoginModel.getUsername();
-		String password = sysLoginModel.getPassword();
+	public JsonResult login(@RequestBody LoginRequestJson loginRequestJson) {
+		String username = loginRequestJson.getUsername();
+		String password = loginRequestJson.getPassword();
 		SysUser sysUser = sysUserService.getUserByName(username);
-		JsonResult<JSONObject> jsonResult = new JsonResult<>();
 		if(sysUser==null) {
-			jsonResult.error("该用户不存在");
-			return jsonResult;
+			return JsonResult.error500("该用户不存在");
 		}else {
 			//密码验证
 			String encryptPassword = PasswordUtil.encrypt(username, password, sysUser.getSalt());
 			String sysPassword = sysUser.getPassword();
 			if(!sysPassword.equals(encryptPassword)) {
-				jsonResult.error("用户名或密码错误");
-				return jsonResult;
+				return JsonResult.error500("用户名或密码错误");
 			}
 			//生成token
 			String token = JwtUtil.sign(username, sysPassword);
 			redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
-			redisUtil.del(CommonConstant.PREFIX_USER_TOKEN + token);
 			 //设置超时时间
 			redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME/1000);
-
-			JSONObject obj = new JSONObject();
-			obj.put("token", token);
-			obj.put("userInfo", sysUser);
-			jsonResult.setResult(obj);
-			return jsonResult.success("登录成功");
+			UserResponseJson userResponseJson = new UserResponseJson();
+			BeanUtils.copyProperties(sysUser,userResponseJson);
+			userResponseJson.setToken(token);
+			return JsonResult.ok("登录成功",userResponseJson);
 		}
 	}
 	
