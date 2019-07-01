@@ -36,7 +36,7 @@ public class LoginController {
 	RedisUtil redisUtil;
 
 
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	@PostMapping(value = "/login")
 	@ApiOperation("登录接口")
 	public JsonResult<JSONObject> login(@RequestBody SysLoginModel sysLoginModel) {
 		String username = sysLoginModel.getUsername();
@@ -57,6 +57,7 @@ public class LoginController {
 			//生成token
 			String token = JwtUtil.sign(username, sysPassword);
 			redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
+			redisUtil.del(CommonConstant.PREFIX_USER_TOKEN + token);
 			 //设置超时时间
 			redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME/1000);
 
@@ -64,9 +65,8 @@ public class LoginController {
 			obj.put("token", token);
 			obj.put("userInfo", sysUser);
 			jsonResult.setResult(obj);
-			jsonResult.success("登录成功");
+			return jsonResult.success("登录成功");
 		}
-		return jsonResult;
 	}
 	
 	/**
