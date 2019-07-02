@@ -1,4 +1,4 @@
-package com.cn.author.common.constant.enums;
+package com.cn.author.common.constant.interfaces;
 /**
  * 数据库上下文常量
  */
