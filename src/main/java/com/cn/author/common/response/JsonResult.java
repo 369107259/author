@@ -8,22 +8,14 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- *   接口返回数据格式
- * @author scott
- * @email jeecgos@163.com
- * @date  2019年1月19日
+ * 接口返回数据格式
+ * @author huangYong
  */
 @Data
 @ApiModel(value="接口返回对象", description="接口返回对象")
 public class JsonResult<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * 成功标志
-	 */
-	@ApiModelProperty(value = "成功标志")
-	private boolean success = true;
 
 	/**
 	 * 返回处理消息
@@ -47,11 +39,11 @@ public class JsonResult<T> implements Serializable {
 
 	}
 
-	/**
-	 * 时间戳
-	 */
-	@ApiModelProperty(value = "时间戳")
-	private long timestamp = System.currentTimeMillis();
+	public JsonResult(String message, Integer code, T result) {
+		this.message = message;
+		this.code = code;
+		this.result = result;
+	}
 
 
 	/**
@@ -115,13 +107,11 @@ public class JsonResult<T> implements Serializable {
 		JsonResult<Object> r = new JsonResult<Object>();
 		r.setCode(code);
 		r.setMessage(msg);
-		r.setSuccess(false);
 		return r;
 	}
 
 	public static JsonResult<Object> ok() {
 		JsonResult<Object> r = new JsonResult<Object>();
-		r.setSuccess(true);
 		r.setCode(CommonConstant.CODE_SUCCESS);
 		r.setMessage(CommonConstant.OPERATE_SUCCESS);
 		return r;
@@ -137,7 +127,6 @@ public class JsonResult<T> implements Serializable {
 
 	public static JsonResult<Object> ok(String msg, Object data) {
 		JsonResult<Object> r = new JsonResult<Object>();
-		r.setSuccess(true);
 		r.setCode(CommonConstant.CODE_SUCCESS);
 		r.setMessage(msg);
 		r.setResult(data);
