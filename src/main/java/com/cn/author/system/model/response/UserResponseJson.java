@@ -1,5 +1,6 @@
 package com.cn.author.system.model.response;
 
+import com.cn.author.system.entity.SysDepart;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -7,6 +8,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author 黄勇
@@ -65,4 +67,9 @@ public class UserResponseJson {
     private String orgCode;
 
     private String token;
+
+    /***
+     * 用户部门信息
+     */
+    List<SysDepart> departs;
 }

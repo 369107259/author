@@ -1,15 +1,16 @@
 package com.cn.author.system.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.cn.author.common.constant.interfaces.CommonConstant;
 import com.cn.author.common.jwt.JwtUtil;
+import com.cn.author.common.redis.RedisUtil;
 import com.cn.author.common.response.JsonResult;
 import com.cn.author.common.utils.PasswordUtil;
-import com.cn.author.common.redis.RedisUtil;
+import com.cn.author.system.entity.SysDepart;
 import com.cn.author.system.entity.SysUser;
-import com.cn.author.system.model.response.LoginUser;
 import com.cn.author.system.model.request.LoginRequestJson;
+import com.cn.author.system.model.response.LoginUser;
 import com.cn.author.system.model.response.UserResponseJson;
+import com.cn.author.system.service.ISysDepartService;
 import com.cn.author.system.service.ISysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,10 +19,14 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @Author scott
@@ -36,7 +41,8 @@ public class LoginController {
 	private ISysUserService sysUserService;
 	@Autowired
 	RedisUtil redisUtil;
-
+	@Autowired
+	private ISysDepartService sysDepartService;
 
 	@PostMapping(value = "/login")
 	@ApiOperation("登录接口")
@@ -58,9 +64,14 @@ public class LoginController {
 			redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
 			 //设置超时时间
 			redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME/1000);
+
+			//获取用户部门信息
+			List<SysDepart> departs = sysDepartService.queryUserDeparts(sysUser.getId());
+
 			UserResponseJson userResponseJson = new UserResponseJson();
 			BeanUtils.copyProperties(sysUser,userResponseJson);
 			userResponseJson.setToken(token);
+			userResponseJson.setDeparts(departs);
 			return JsonResult.ok("登录成功",userResponseJson);
 		}
 	}
