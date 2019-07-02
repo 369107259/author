@@ -45,13 +45,13 @@ public class LoginController {
 		String password = loginRequestJson.getPassword();
 		SysUser sysUser = sysUserService.getUserByName(username);
 		if(sysUser==null) {
-			return JsonResult.error500("该用户不存在");
+			return JsonResult.fault("该用户不存在");
 		}else {
 			//密码验证
 			String encryptPassword = PasswordUtil.encrypt(username, password, sysUser.getSalt());
 			String sysPassword = sysUser.getPassword();
 			if(!sysPassword.equals(encryptPassword)) {
-				return JsonResult.error500("用户名或密码错误");
+				return JsonResult.fault("用户名或密码错误");
 			}
 			//生成token
 			String token = JwtUtil.sign(username, sysPassword);

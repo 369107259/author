@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public JsonResult handleException(Exception e) {
         log.error(e.getMessage(), e);
-        return JsonResult.error500("服务器错误，请联系管理员");
+        return JsonResult.fault("服务器错误，请联系管理员");
     }
 
     /**
@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = RuntimeException.class)
     public JsonResult runtimeException(RuntimeException e) {
         log.error(e.getMessage(), e);
-        return JsonResult.error500("运行时异常:" + e.getMessage());
+        return JsonResult.fault("运行时异常:" + e.getMessage());
     }
 
     /**
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
     public JsonResult handleException(HttpRequestMethodNotSupportedException e) {
         log.error(e.getMessage(), e);
-        return JsonResult.error500("不支持' " + e.getMethod() + "'请求");
+        return JsonResult.fault("不支持' " + e.getMethod() + "'请求");
     }
 
     /***
@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = BusinessException.class)
     public JsonResult businessException(BusinessException e) {
         log.error(e.getMessage(), e);
-        return JsonResult.error500(null == e.getCode() ? CommonConstant.CODE_FAILED : e.getCode(), e.getMessage());
+        return JsonResult.fault(null == e.getCode() ? CommonConstant.CODE_FAILED : e.getCode(), e.getMessage());
     }
 
 }

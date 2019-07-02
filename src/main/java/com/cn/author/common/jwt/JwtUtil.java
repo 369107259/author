@@ -5,12 +5,14 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.cn.author.common.constant.enums.DataBaseConstant;
 import com.cn.author.common.constant.interfaces.CommonConstant;
 import com.cn.author.common.exception.BusinessException;
 import com.cn.author.common.utils.ConvertUtils;
 import com.cn.author.common.utils.SpringContextUtils;
+import com.cn.author.common.utils.system.JeecgDataAutorUtils;
+import com.cn.author.system.model.response.SysUserCacheInfo;
 import com.google.common.base.Joiner;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -119,7 +121,7 @@ public class JwtUtil {
 	 * @param user
 	 * @return
 	 */
-	/*public static String getUserSystemData(String key, SysUserCacheInfo user) {
+	public static String getUserSystemData(String key, SysUserCacheInfo user) {
 		if(user==null) {
 			user = JeecgDataAutorUtils.loadUserInfo();
 		}
@@ -170,5 +172,5 @@ public class JwtUtil {
 		}
 		if(returnValue!=null){returnValue = returnValue + moshi;}
 		return returnValue;
-	}*/
+	}
 }

@@ -14,6 +14,29 @@ public interface CommonConstant {
     String OPERATE_SUCCESS = "success";
     String OPERATE_FAILED = "failed";
 
+    /**
+     * 系统日志类型： 登录
+     */
+    int LOG_TYPE_1 = 1;
+
+    /**
+     * 系统日志类型： 操作
+     */
+    int LOG_TYPE_2 = 2;
+
+    /**
+     *  0：一级菜单
+     */
+    public static Integer MENU_TYPE_0  = 0;
+    /**
+     *  1：子菜单
+     */
+    public static Integer MENU_TYPE_1  = 1;
+    /**
+     *  2：按钮权限
+     */
+    public static Integer MENU_TYPE_2  = 2;
+
     /***
      * 请求header中token得KEY
      */
