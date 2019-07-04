@@ -1,19 +1,27 @@
 package com.cn.author.system.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cn.author.common.response.JsonResult;
 import com.cn.author.common.utils.ConvertUtils;
+import com.cn.author.common.utils.PasswordUtil;
 import com.cn.author.system.entity.SysUser;
 import com.cn.author.system.entity.SysUserRole;
 import com.cn.author.system.mapper.SysUserMapper;
 import com.cn.author.system.mapper.SysUserRoleMapper;
+import com.cn.author.system.model.request.SysUserRequestJson;
 import com.cn.author.system.service.ISysUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -42,38 +50,50 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     /**
      * 添加用户和用户角色关系
      *
-     * @param user
-     * @param roles
+     * @param sysUserRequestJson
      */
     @Override
-    public void addUserWithRole(SysUser user, String roles) {
+    @Transactional
+    public JsonResult addUserWithRole(SysUserRequestJson sysUserRequestJson) {
+        SysUser user = new SysUser();
+        BeanUtils.copyProperties(sysUserRequestJson, user);
+        user.setCreateTime(new Date());//设置创建时间
+        String salt = ConvertUtils.randomGen(8);
+        user.setSalt(salt);
+        String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), salt);
+        user.setPassword(passwordEncode);
+        user.setStatus(1);
+        user.setDelFlag("0");
         this.save(user);
-        NonNullNewUserRoles(user, roles);
+        NonNullNewUserRoles(user, sysUserRequestJson.getSelectedRoles());
+        return JsonResult.ok("新增成功");
     }
 
     /**
      * 修改用户和用户角色关系
      *
-     * @param user
-     * @param roles
+     * @param sysUserRequestJson
      */
     @Override
-    public void editUserWithRole(SysUser user, String roles) {
+    @Transactional
+    public void editUserWithRole(SysUserRequestJson sysUserRequestJson) {
+        SysUser user = new SysUser();
+        BeanUtils.copyProperties(sysUserRequestJson, user);
+        user.setUpdateTime(new Date());
+        user.setPassword(user.getPassword());
         this.updateById(user);
         //先删后加
         sysUserRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, user.getId()));
-        NonNullNewUserRoles(user, roles);
+        NonNullNewUserRoles(user, sysUserRequestJson.getSelectedRoles());
 
     }
 
-    private void NonNullNewUserRoles(SysUser user, String roles) {
-        if (ConvertUtils.isNotEmpty(roles)) {
-            String[] arr = roles.split(",");
-            for (String roleId : arr) {
+    private void NonNullNewUserRoles(SysUser user, List<String> roles) {
+        if (CollectionUtils.isNotEmpty(roles)) {
+            roles.parallelStream().forEach(roleId -> {
                 SysUserRole userRole = new SysUserRole(user.getId(), roleId);
                 sysUserRoleMapper.insert(userRole);
-
-            }
+            });
         }
     }
 

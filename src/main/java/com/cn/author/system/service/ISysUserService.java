@@ -3,7 +3,9 @@ package com.cn.author.system.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.cn.author.common.response.JsonResult;
 import com.cn.author.system.entity.SysUser;
+import com.cn.author.system.model.request.SysUserRequestJson;
 
 import java.util.List;
 import java.util.Set;
@@ -22,18 +24,16 @@ public interface ISysUserService extends IService<SysUser> {
 	
 	/**
 	 * 添加用户和用户角色关系
-	 * @param user
-	 * @param roles
+	 * @param sysUserRequestJson
 	 */
-	public void addUserWithRole(SysUser user, String roles);
+	public JsonResult addUserWithRole(SysUserRequestJson sysUserRequestJson);
 
 
 	/**
 	 * 修改用户和用户角色关系
-	 * @param user
-	 * @param roles
+	 * @param sysUserRequestJson
 	 */
-	public void editUserWithRole(SysUser user, String roles);
+	public void editUserWithRole(SysUserRequestJson sysUserRequestJson);
 
 	/**
 	 * 获取用户的授权角色
