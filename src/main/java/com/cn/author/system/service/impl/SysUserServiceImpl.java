@@ -9,11 +9,14 @@ import com.cn.author.common.response.JsonResult;
 import com.cn.author.common.utils.ConvertUtils;
 import com.cn.author.common.utils.PasswordUtil;
 import com.cn.author.system.entity.SysUser;
+import com.cn.author.system.entity.SysUserDepart;
 import com.cn.author.system.entity.SysUserRole;
+import com.cn.author.system.mapper.SysUserDepartMapper;
 import com.cn.author.system.mapper.SysUserMapper;
 import com.cn.author.system.mapper.SysUserRoleMapper;
 import com.cn.author.system.model.request.SysUserRequestJson;
 import com.cn.author.system.service.ISysUserService;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -24,6 +27,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * <p>
@@ -41,6 +45,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private SysUserMapper sysUserMapper;
     @Resource
     private SysUserRoleMapper sysUserRoleMapper;
+    @Resource
+    private SysUserDepartMapper sysUserDepartMapper;
 
     @Override
     public SysUser getUserByName(String username) {
@@ -66,6 +72,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         user.setDelFlag("0");
         this.save(user);
         NonNullNewUserRoles(user, sysUserRequestJson.getSelectedRoles());
+        NonNullNewUserDeparts(user, sysUserRequestJson.getSelectedDeparts());
         return JsonResult.ok("新增成功");
     }
 
@@ -85,7 +92,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         //先删后加
         sysUserRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, user.getId()));
         NonNullNewUserRoles(user, sysUserRequestJson.getSelectedRoles());
-
+        NonNullNewUserDeparts(user, sysUserRequestJson.getSelectedDeparts());
     }
 
     private void NonNullNewUserRoles(SysUser user, List<String> roles) {
@@ -93,6 +100,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             roles.parallelStream().forEach(roleId -> {
                 SysUserRole userRole = new SysUserRole(user.getId(), roleId);
                 sysUserRoleMapper.insert(userRole);
+            });
+        }
+    }
+
+    private void NonNullNewUserDeparts(SysUser user, List<String> departs) {
+        if (CollectionUtils.isNotEmpty(departs)) {
+            departs.parallelStream().forEach(departId -> {
+                SysUserDepart userDepart = new SysUserDepart(UUID.randomUUID().toString(),user.getId(), departId);
+                sysUserDepartMapper.insert(userDepart);
             });
         }
     }
