@@ -111,7 +111,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private void NonNullNewUserDeparts(SysUser user, List<String> departs) {
         if (CollectionUtils.isNotEmpty(departs)) {
             departs.parallelStream().forEach(departId -> {
-                SysUserDepart userDepart = new SysUserDepart(UUID.randomUUID().toString(),user.getId(), departId);
+                SysUserDepart userDepart = new SysUserDepart(UUID.randomUUID().toString(), user.getId(), departId);
                 sysUserDepartMapper.insert(userDepart);
             });
         }
