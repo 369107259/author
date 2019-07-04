@@ -19,6 +19,7 @@ import com.cn.author.system.service.ISysUserService;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,8 +72,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         user.setStatus(1);
         user.setDelFlag("0");
         this.save(user);
-        NonNullNewUserRoles(user, sysUserRequestJson.getSelectedRoles());
-        NonNullNewUserDeparts(user, sysUserRequestJson.getSelectedDeparts());
+        SysUserServiceImpl sysUserService = (SysUserServiceImpl) AopContext.currentProxy();
+        sysUserService.NonNullNewUserRoles(user, sysUserRequestJson.getSelectedRoles());
+        sysUserService.NonNullNewUserDeparts(user, sysUserRequestJson.getSelectedDeparts());
         return JsonResult.ok("新增成功");
     }
 
@@ -91,8 +93,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         this.updateById(user);
         //先删后加
         sysUserRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, user.getId()));
-        NonNullNewUserRoles(user, sysUserRequestJson.getSelectedRoles());
-        NonNullNewUserDeparts(user, sysUserRequestJson.getSelectedDeparts());
+        SysUserServiceImpl sysUserService = (SysUserServiceImpl) AopContext.currentProxy();
+        sysUserService.NonNullNewUserRoles(user, sysUserRequestJson.getSelectedRoles());
+        sysUserDepartMapper.delete(new LambdaQueryWrapper<SysUserDepart>().eq(SysUserDepart::getUserId, user.getId()));
+        sysUserService.NonNullNewUserDeparts(user, sysUserRequestJson.getSelectedDeparts());
     }
 
     private void NonNullNewUserRoles(SysUser user, List<String> roles) {
