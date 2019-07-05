@@ -85,4 +85,6 @@ public interface ISysUserService extends IService<SysUser> {
 	 * @param orgCode
 	 */
 	void updateUserDepart(String username, String orgCode);
+
+	JsonResult<SysUser> deleteUser(String id);
 }

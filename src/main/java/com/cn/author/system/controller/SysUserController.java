@@ -116,7 +116,7 @@ public class SysUserController {
                 result.success("删除成功!");
             }
         }
-        return result;
+        return sysUserService.deleteUser(id);
     }
 
     /**
