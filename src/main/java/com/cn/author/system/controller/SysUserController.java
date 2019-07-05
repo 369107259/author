@@ -106,7 +106,7 @@ public class SysUserController {
         LambdaQueryWrapper<SysUserDepart> query = new LambdaQueryWrapper<SysUserDepart>();
         SysUser sysUser = sysUserService.getById(id);
         if (sysUser == null) {
-            result.error("未找到对应实体");
+            result.error("未找到对应用户");
         } else {
             // 当某个用户被删除时,删除其ID下对应的部门数据
             query.eq(SysUserDepart::getUserId, id);

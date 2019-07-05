@@ -1,9 +1,9 @@
 package com.cn.author.system.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cn.author.common.response.JsonResult;
 import com.cn.author.common.utils.ConvertUtils;
@@ -16,7 +16,6 @@ import com.cn.author.system.mapper.SysUserMapper;
 import com.cn.author.system.mapper.SysUserRoleMapper;
 import com.cn.author.system.model.request.SysUserRequestJson;
 import com.cn.author.system.service.ISysUserService;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
@@ -62,6 +61,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     @Transactional
     public JsonResult addUserWithRole(SysUserRequestJson sysUserRequestJson) {
+        List<SysUser> sysUsers = sysUserMapper.selectList(new LambdaQueryWrapper<SysUser>()
+                .eq(SysUser::getUsername, sysUserRequestJson.getUsername()));
+        if (CollectionUtils.isNotEmpty(sysUsers)) {
+           return JsonResult.fault("新增用户已存在！");
+        }
         SysUser user = new SysUser();
         BeanUtils.copyProperties(sysUserRequestJson, user);
         user.setCreateTime(new Date());//设置创建时间
@@ -99,7 +103,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         sysUserService.NonNullNewUserDeparts(user, sysUserRequestJson.getSelectedDeparts());
     }
 
-    private void NonNullNewUserRoles(SysUser user, List<String> roles) {
+    public void NonNullNewUserRoles(SysUser user, List<String> roles) {
         if (CollectionUtils.isNotEmpty(roles)) {
             roles.parallelStream().forEach(roleId -> {
                 SysUserRole userRole = new SysUserRole(user.getId(), roleId);
@@ -108,7 +112,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
     }
 
-    private void NonNullNewUserDeparts(SysUser user, List<String> departs) {
+    public void NonNullNewUserDeparts(SysUser user, List<String> departs) {
         if (CollectionUtils.isNotEmpty(departs)) {
             departs.parallelStream().forEach(departId -> {
                 SysUserDepart userDepart = new SysUserDepart(UUID.randomUUID().toString(), user.getId(), departId);
