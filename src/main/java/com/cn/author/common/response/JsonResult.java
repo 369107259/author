@@ -36,6 +36,9 @@ public class JsonResult<T> implements Serializable {
     @ApiModelProperty(value = "返回数据对象")
     private T result;
 
+    @ApiModelProperty(value = "其他返回数据对象")
+    private Object otherData;
+
     public JsonResult() {
 
     }
