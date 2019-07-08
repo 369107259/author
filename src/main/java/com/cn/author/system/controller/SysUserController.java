@@ -287,7 +287,7 @@ public class SysUserController {
      * @return
      */
     @RequestMapping(value = "/addUDepartIds", method = RequestMethod.POST)
-    public JsonResult<String> addSysUseWithrDepart(@RequestBody SysUserDepartsVO sysUserDepartsVO) {
+    public JsonResult<String> addSysUseWithDepart(@RequestBody SysUserDepartsVO sysUserDepartsVO) {
         boolean ok = this.sysUserDepartService.addSysUseWithrDepart(sysUserDepartsVO);
         JsonResult<String> result = new JsonResult<String>();
         try {
