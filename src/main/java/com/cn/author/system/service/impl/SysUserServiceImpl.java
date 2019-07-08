@@ -3,7 +3,6 @@ package com.cn.author.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cn.author.common.response.JsonResult;
 import com.cn.author.common.utils.ConvertUtils;
@@ -48,6 +47,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Resource
     private SysUserDepartMapper sysUserDepartMapper;
 
+
     @Override
     public SysUser getUserByName(String username) {
         return sysUserMapper.getUserByName(username);
@@ -64,7 +64,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         List<SysUser> sysUsers = sysUserMapper.selectList(new LambdaQueryWrapper<SysUser>()
                 .eq(SysUser::getUsername, sysUserRequestJson.getUsername()));
         if (CollectionUtils.isNotEmpty(sysUsers)) {
-           return JsonResult.fault("新增用户已存在！");
+            return JsonResult.fault("新增用户已存在！");
         }
         SysUser user = new SysUser();
         BeanUtils.copyProperties(sysUserRequestJson, user);
@@ -119,6 +119,23 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 sysUserDepartMapper.insert(userDepart);
             });
         }
+    }
+
+    /***
+     * 删除用户
+     * @param id
+     * @return
+     */
+    @Override
+    @Transactional
+    public JsonResult<SysUser> deleteUser(String id) {
+        JsonResult<SysUser> result = new JsonResult<>();
+        this.removeById(id);
+        // 当某个用户被删除时,删除其ID下对应的部门数据
+        sysUserDepartMapper.delete(new LambdaQueryWrapper<SysUserDepart>().eq(SysUserDepart::getUserId, id));
+        //当某个用户被删除时,删除其ID下对应的角色数据
+        sysUserRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, id));
+        return result.success("删除成功!");
     }
 
     /**

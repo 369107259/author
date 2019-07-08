@@ -102,19 +102,9 @@ public class SysUserController {
     @DeleteMapping(value = "/delete")
     public JsonResult<SysUser> delete(@RequestParam(name = "id") String id) {
         JsonResult<SysUser> result = new JsonResult<SysUser>();
-        // 定义SysUserDepart实体类的数据库查询LambdaQueryWrapper
-        LambdaQueryWrapper<SysUserDepart> query = new LambdaQueryWrapper<SysUserDepart>();
         SysUser sysUser = sysUserService.getById(id);
         if (sysUser == null) {
             result.error("未找到对应用户");
-        } else {
-            // 当某个用户被删除时,删除其ID下对应的部门数据
-            query.eq(SysUserDepart::getUserId, id);
-            boolean ok = sysUserService.removeById(id);
-            sysUserDepartService.remove(query);
-            if (ok) {
-                result.success("删除成功!");
-            }
         }
         return sysUserService.deleteUser(id);
     }
