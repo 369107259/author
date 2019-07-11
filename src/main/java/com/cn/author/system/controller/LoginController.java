@@ -60,7 +60,7 @@ public class LoginController {
 				return JsonResult.fault("用户名或密码错误");
 			}
 			//生成token
-			String token = JwtUtil.sign(username, sysPassword);
+			String token = JwtUtil.sign(sysUser);
 			redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
 			 //设置超时时间
 			redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME/1000);

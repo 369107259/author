@@ -99,7 +99,7 @@ public class ShiroRealm extends AuthorizingRealm {
 	 */
 	public LoginUser checkUserTokenIsEffect(String token) throws AuthenticationException {
 		// 解密获得username，用于和数据库进行对比
-		String username = JwtUtil.getUsername(token);
+		String username = JwtUtil.getUserName(token);
 		if (username == null) {
 			throw new AuthenticationException("token非法无效!");
 		}
@@ -110,7 +110,7 @@ public class ShiroRealm extends AuthorizingRealm {
 			throw new AuthenticationException("用户不存在!");
 		}
 		// 校验token是否超时失效 & 或者账号密码是否错误
-		if (!jwtTokenRefresh(token, username, sysUser.getPassword())) {
+		if (!jwtTokenRefresh(token, sysUser)) {
 			throw new AuthenticationException("Token失效，请重新登录!");
 		}
 		// 判断用户状态
@@ -132,16 +132,15 @@ public class ShiroRealm extends AuthorizingRealm {
 	 * 7、注：当前端接收到Response的Header中的Authorization值会存储起来，作为以后请求token使用
 	 * 参考方案：https://blog.csdn.net/qq394829044/article/details/82763936
 	 * 
-	 * @param userName
-	 * @param passWord
+	 * @param sysUser
 	 * @return
 	 */
-	public boolean jwtTokenRefresh(String token, String userName, String passWord) {
+	public boolean jwtTokenRefresh(String token, SysUser sysUser) {
 		String cacheToken = String.valueOf(redisUtil.get(CommonConstant.PREFIX_USER_TOKEN + token));
 		if (ConvertUtils.isNotEmpty(cacheToken)) {
 			// 校验token有效性
-			if (!JwtUtil.verify(token, userName, passWord)) {
-				String newAuthorization = JwtUtil.sign(userName, passWord);
+			if (!JwtUtil.verify(token)) {
+				String newAuthorization = JwtUtil.sign(sysUser);
 				redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, newAuthorization);
 				// 设置超时时间
 				redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME / 1000);

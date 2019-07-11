@@ -85,7 +85,7 @@ public class SysPermissionController {
 				return JsonResult.fault("TOKEN不允许为空！");
 			}
 			log.info(" ------ 通过令牌获取用户拥有的访问菜单 ---- TOKEN ------ " + token);
-			String username = JwtUtil.getUsername(token);
+			String username = JwtUtil.getUserName(token);
 			List<SysPermission> metaList = sysPermissionService.queryByUser(username);
 			PermissionDataUtil.addIndexPage(metaList);
 			JSONObject json = new JSONObject();
